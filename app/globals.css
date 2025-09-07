@@ -2,26 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Global Font */
+* {
+  font-family: var(--font-outfit);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Primary Button */
+.btn-primary {
+  @apply bg-[#00a6ff] text-black font-semibold rounded-full 
+         hover:bg-[#0095e8] transition duration-300 ease-in-out 
+         transform hover:-translate-y-1 shadow-lg shadow-blue-300/40
+         z-40 px-6 py-2;
+}
+
+/* Responsive Button Size */
+@media (max-width: 640px) {
+  .btn-primary {
+    @apply px-8 py-3 text-base;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* ------------------- Slide In ------------------- */
+@keyframes slideIn {
+  0% {
+    transform: translateY(-50px) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out forwards;
 }
 
+/* ------------------- Fade Animations ------------------- */
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  /* Basic fades */
+  .fade-up {
+    @apply opacity-0 translate-y-8;
+    animation: fadeUp 0.8s ease-out forwards;
   }
+  .fade-down {
+    @apply opacity-0 -translate-y-8;
+    animation: fadeDown 0.8s ease-out forwards;
+  }
+  .fade-left {
+    @apply opacity-0 -translate-x-8;
+    animation: fadeLeft 0.8s ease-out forwards;
+  }
+  .fade-right {
+    @apply opacity-0 translate-x-8;
+    animation: fadeRight 0.8s ease-out forwards;
+  }
+
+  /* Fade + Slide combo */
+  .fade-slide-up {
+    @apply opacity-0 translate-y-6;
+    animation: fadeSlideUp 0.8s ease-out forwards;
+  }
+  .fade-slide-down {
+    @apply opacity-0 -translate-y-6;
+    animation: fadeSlideDown 0.8s ease-out forwards;
+  }
+  .fade-slide-left {
+    @apply opacity-0 -translate-x-6;
+    animation: fadeSlideLeft 0.8s ease-out forwards;
+  }
+  .fade-slide-right {
+    @apply opacity-0 translate-x-6;
+    animation: fadeSlideRight 0.8s ease-out forwards;
+  }
+
+  /* Optional: Animation Delay Utilities */
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+  .delay-400 { animation-delay: 0.4s; }
+  .delay-500 { animation-delay: 0.5s; }
+  .delay-600 { animation-delay: 0.6s; }
+  .delay-700 { animation-delay: 0.7s; }
+  .delay-800 { animation-delay: 0.8s; }
+  .delay-900 { animation-delay: 0.9s; }
+  .delay-1000 { animation-delay: 1s; }
+}
+
+/* Keyframes */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeLeft {
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeRight {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeSlideUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeSlideDown {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeSlideLeft {
+  0% { opacity: 0; transform: translateX(-20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeSlideRight {
+  0% { opacity: 0; transform: translateX(20px); }
+  100% { opacity: 1; transform: translateX(0); }
 }
