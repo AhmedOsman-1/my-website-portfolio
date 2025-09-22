@@ -1,8 +1,8 @@
-// app/layout.tsx
 import "./globals.css";
 import { Bebas_Neue, Poppins, Outfit } from "next/font/google";
+import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 
-// Bebas Neue (for Headlines)
+// Fonts
 const bebas = Bebas_Neue({
   subsets: ["latin"],
   weight: "400",
@@ -10,7 +10,6 @@ const bebas = Bebas_Neue({
   display: "swap",
 });
 
-// Poppins (for body text / secondary font)
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -18,7 +17,6 @@ const poppins = Poppins({
   display: "swap",
 });
 
-// Outfit (for buttons / alternative text)
 const outfit = Outfit({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -34,10 +32,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${bebas.variable} ${poppins.variable} ${outfit.variable} antialiased `}
-      >
-        {children}
+      <body className={`${bebas.variable} ${poppins.variable} ${outfit.variable} antialiased`}>
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
   );

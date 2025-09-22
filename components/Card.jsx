@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { FaLocationArrow } from "react-icons/fa";
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
 const Card = ({ item, type, cardRef }) => {
@@ -10,10 +10,8 @@ const Card = ({ item, type, cardRef }) => {
 
   useEffect(() => {
     if (!cardContainer.current) return;
-
     const el = cardContainer.current;
 
-    // Hover in
     const handleMouseEnter = () => {
       gsap.to(el, {
         scale: 1.05,
@@ -24,7 +22,6 @@ const Card = ({ item, type, cardRef }) => {
       });
     };
 
-    // Hover out
     const handleMouseLeave = () => {
       gsap.to(el, {
         scale: 1,
@@ -47,7 +44,7 @@ const Card = ({ item, type, cardRef }) => {
   return (
     <div
       ref={(el) => {
-        cardRef && cardRef(el); // maintain parent ref
+        cardRef && cardRef(el);
         cardContainer.current = el;
       }}
       className="flex-shrink-0 w-[90%] md:w-[45%] lg:w-[30%]
@@ -55,11 +52,11 @@ const Card = ({ item, type, cardRef }) => {
         backdrop-blur-md
         border border-white/20
         shadow-[0_15px_35px_rgba(0,200,255,0.15)]
-        rounded-2xl"
-      style={{ height: "42vh", minHeight: "420px"}}
-      
+        rounded-2xl
+        will-change-transform"
+      style={{ height: "42vh", minHeight: "420px" }}
     >
-      {/* Image Section */}
+      {/* Image */}
       <div className="relative w-full h-[70%] overflow-hidden p-4 flex items-center justify-center">
         <Image
           src={item.img}
@@ -67,20 +64,22 @@ const Card = ({ item, type, cardRef }) => {
           className="w-[95%] h-[90%] object-contain"
           width={500}
           height={500}
+          style={{ transformOrigin: "center" }}
         />
       </div>
 
       {/* Bottom Section */}
       <div
-        style={{ backgroundImage: "url('/bg.jpg')" }}
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/bg.jpg')",
+        }}
         className="bg-cover bg-center bg-no-repeat p-4 border-t border-white/10 h-1/2 flex flex-col justify-between"
       >
         <div>
           <h2 className="text-[#09c6ff] font-bold text-lg md:text-xl line-clamp-1">
             {item.title}
           </h2>
-
-          {/* Service description OR Project des */}
           <p className="text-white text-sm md:text-base mt-1 line-clamp-2">
             {type === "service" ? item.description : item.des}
           </p>
@@ -98,7 +97,7 @@ const Card = ({ item, type, cardRef }) => {
                 </div>
               ))}
             </div>
-          )} 
+          )}
 
           {type === "project" && (
             <a

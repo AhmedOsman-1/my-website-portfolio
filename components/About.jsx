@@ -145,7 +145,7 @@ const About = () => {
   }, []);
 
   return (
-    <section className=" rounded-[50px] bg-white shadow-xl mt-40 w-full px-[10%] py-16 scroll-mt-20 overflow-hidden" >
+    <section className=" rounded-[50px] border border-white/30 bg-white shadow-xl mt-12 w-full px-[10%] py-16 scroll-mt-20 overflow-hidden" >
       {/* Section Header */}
       <div className="text-center mb-12" ref={headingRef}>
         <h4 className="text-lg font-Poppins text-black mb-2">Introduction</h4>
@@ -168,7 +168,7 @@ const About = () => {
           <div className="flex items-center gap-4 mb-2">
             <p className="text-5xl font-Bebas text-zinc-900">Osman</p>
             <div className="flex gap-3">
-              <Link href="https://www.linkedin.com/in/osman-goni-devx" target="_blank">
+              <Link href="https://www.linkedin.com/in/osman-goni-devx " target="_blank">
                 <Image
                   src="/Linkedin2.png"
                   width={28}
@@ -188,7 +188,7 @@ const About = () => {
               </Link>
             </div>
           </div>
-          <p className="text-gray-800 font-bold font-Poppins text-lg mb-4">Front-End Developer</p>
+          <p className="text-slate-700  font-Poppins text-lg ">Front-End Developer</p>
           <Button
             variant="outline"
             className="mt-4 hover:scale-105 transition-transform duration-300"
@@ -229,7 +229,7 @@ const About = () => {
           {/* Tools */}
           <h4
             ref={toolsRef}
-            className="text-black font-Poppins text-lg text-center mt-4"
+            className="text-black font-Bebas text-lg text-center mt-4"
           >
             Tools Behind the magic
           </h4>

@@ -63,7 +63,7 @@ const AccordionItems = () => {
   return (
     <section ref={sectionRef} className="mt-8">
       <h4 className="text-2xl md:text-3xl uppercase font-Bebas font-semibold text-center mb-6 text-slate-900">
-        I can guess what you’re about to ask me 😏
+        Frequiently Asked Questions:
       </h4>
       <Accordion type="single" collapsible className="max-w-3xl mx-auto">
         {[

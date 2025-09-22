@@ -1,77 +1,70 @@
 "use client";
 
-import { servicesData } from "@/database";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/dist/Draggable";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { useEffect, useRef, useState } from "react";
 import Card from "./Card";
 import CarouselButtons from "./CarouselButtons";
+import { servicesData } from "@/database";
 
 gsap.registerPlugin(Draggable, ScrollTrigger);
 
-const Services = () => {
+export default function Services() {
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
   const headingRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(1);
 
-  // Responsive cards count
-  const getCardsToShow = () => {
+  const getCardsToShow = useCallback(() => {
     if (typeof window !== "undefined") {
       if (window.innerWidth >= 1024) return 3;
       if (window.innerWidth >= 768) return 2;
       return 1;
     }
     return 1;
-  };
-
-  useEffect(() => {
-    const handleResize = () => setCardsToShow(getCardsToShow());
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container || !cardsRef.current[0]) return;
+    const resize = () => setCardsToShow(getCardsToShow());
+    resize();
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, [getCardsToShow]);
+
+  useEffect(() => {
+    if (!containerRef.current || !cardsRef.current[0]) return;
 
     const gap = 32;
     const cardWidth = cardsRef.current[0].offsetWidth;
     const totalCards = cardsRef.current.length;
-
-    // ✅ lastIndex properly calculate (gap included)
     const lastIndex = Math.max(totalCards - cardsToShow, 0);
 
-    gsap.set(container, { x: 0 });
+    gsap.set(containerRef.current, { x: 0 });
 
-    Draggable.create(container, {
+    Draggable.create(containerRef.current, {
       type: "x",
       inertia: true,
-      bounds: {
-        minX: -(lastIndex * (cardWidth + gap)),
-        maxX: 0,
-      },
+      bounds: { minX: -(lastIndex * (cardWidth + gap)), maxX: 0 },
       cursor: "grab",
       snap: (x) => {
-        const index = Math.round(Math.abs(x) / (cardWidth + gap));
-        return -index * (cardWidth + gap);
+        const idx = Math.round(Math.abs(x) / (cardWidth + gap));
+        return -idx * (cardWidth + gap);
       },
-      onDragEnd: function () {
-        const index = Math.round(Math.abs(this.x) / (cardWidth + gap));
-        const clampedIndex = Math.min(index, lastIndex);
-        gsap.to(container, {
-          x: -clampedIndex * (cardWidth + gap),
-          duration: 0.4,
+      onDragEnd() {
+        const idx = Math.round(Math.abs(this.x) / (cardWidth + gap));
+        const clamped = Math.min(idx, lastIndex);
+        gsap.to(containerRef.current, {
+          x: -clamped * (cardWidth + gap),
+          duration: 0.5,
           ease: "power3.out",
         });
-        setCurrentIndex(clampedIndex);
+        setCurrentIndex(clamped);
       },
     });
 
-    // Animate cards
+    // Animate cards only once
     gsap.fromTo(
       cardsRef.current,
       { y: 60, opacity: 0, scale: 0.95 },
@@ -83,15 +76,14 @@ const Services = () => {
         ease: "power3.out",
         stagger: 0.15,
         scrollTrigger: {
-          trigger: container,
+          trigger: containerRef.current,
           start: "top 90%",
-          end: "top 60%",
-          scrub: true,
+          once: true,
         },
       }
     );
 
-    // Heading animation
+    // Heading animation only once
     if (headingRef.current) {
       gsap.fromTo(
         headingRef.current,
@@ -99,14 +91,9 @@ const Services = () => {
         {
           y: 0,
           opacity: 1,
-          duration: 1,
+          duration: 1.2,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: "top 90%",
-            end: "top 70%",
-            scrub: true,
-          },
+          scrollTrigger: { trigger: headingRef.current, start: "top 90%", once: true },
         }
       );
     }
@@ -125,50 +112,36 @@ const Services = () => {
     else newIndex = Math.min(currentIndex + 1, lastIndex);
 
     setCurrentIndex(newIndex);
-
     gsap.to(containerRef.current, {
       x: -newIndex * (cardWidth + gap),
-      duration: 0.5,
+      duration: 0.6,
       ease: "power3.out",
     });
   };
 
   return (
-    <section
-      className="py-24 relative overflow-hidden border border-white/20
-      bg-gradient-to-b from-[#071C2A]/60 via-[#0A2A45]/30 to-[#071C2A]/60
-      bg-cover bg-center bg-no-repeat rounded-t-[40px] rounded-b-[40px] mt-24"
-      style={{ backgroundImage: "url('/bg.jpg')" }}
-    >
-      <h1
-        ref={headingRef}
-        className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold font-Bebas uppercase text-center mb-4 tracking-wide"
-      >
-        Let me <span className="text-[#13adff]">bring your ideas</span> <span className="text-white"> to life</span>
-      </h1>
+    <section className="py-24 relative overflow-hidden bg-cover border-[#13adff] border-t mt-24 bg-center bg-no-repeat rounded-t-[40px] rounded-b-[40px]">
+      {/* Heading */}
+      <div ref={headingRef} className="text-center mb-12">
+        <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold font-Bebas uppercase tracking-wide">
+          Let me <span className="text-[#13adff]">bring your ideas</span> to life
+        </h1>
+        <p className="text-white/70 md:text-lg lg:text-xl max-w-2xl mx-auto mt-4">
+          I&#39;ll show you how we can build a simple system that brings in better leads and help you close them.
+        </p>
+        <p className="uppercase font-bold text-[#13adff] mt-6">
+          Here&#39;s my services to help you shine
+        </p>
+      </div>
 
-      <p className="text-white/70 text-center md:text-lg lg:text-xl max-w-2xl mx-auto mb-16">
-  I&#39;ll show you how we can build a simple system that brings in better leads and help you close them. <br />
-   <span className="uppercase font-bold text-[#13adff]">
-
-  Here&#39;s my services to help you shine
-  </span>
-</p>
-
-      <div
-        ref={containerRef}
-        className="flex gap-8 cursor-grab select-none px-6 will-change-transform"
-      >
-        {servicesData.map((service, index) => (
-          <Card
-            key={service.id}
-            item={service}
-            type="service"
-            cardRef={(el) => (cardsRef.current[index] = el)}
-          />
+      {/* Cards */}
+      <div ref={containerRef} className="flex gap-8 cursor-grab select-none px-6 will-change-transform">
+        {servicesData.map((service, i) => (
+          <Card key={service.id} item={service} type="service" cardRef={(el) => (cardsRef.current[i] = el)} />
         ))}
       </div>
 
+      {/* Carousel Buttons */}
       <CarouselButtons
         onLeftClick={() => slide("left")}
         onRightClick={() => slide("right")}
@@ -177,6 +150,4 @@ const Services = () => {
       />
     </section>
   );
-};
-
-export default Services;
+}
