@@ -11,7 +11,7 @@ const PERSONAL_INFO = {
   email: "osmangonidevx@gmail.com",
   phone: "+880 1874-787550",
   linkedin: "https://www.linkedin.com/in/osman-goni-devx",
-  location: "Chittagong, Bangladesh"
+  location: "Chittagong, Bangladesh",
 };
 
 // Form validation rules
@@ -19,10 +19,10 @@ const VALIDATION_RULES = {
   name: { minLength: 2, maxLength: 50 },
   email: { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   subject: { minLength: 5, maxLength: 100 },
-  message: { minLength: 10, maxLength: 500 }
+  message: { minLength: 10, maxLength: 500 },
 };
 
-// Input fields array - moved outside component for better performance
+// Input fields array
 const INPUT_FIELDS = ["name", "email", "subject"];
 
 export default function Contact() {
@@ -38,17 +38,14 @@ export default function Contact() {
   const statusRef = useRef(null);
   const scrollTriggers = useRef([]);
 
-  // Rate limiting: prevent submissions more than once every 2 seconds
   const canSubmit = useCallback(() => {
     const now = Date.now();
     return now - lastSubmissionTime > 2000;
   }, [lastSubmissionTime]);
 
-  // Form validation
   const validateForm = useCallback(() => {
     const newErrors = {};
-    
-    // Name validation
+
     if (!form.name.trim()) {
       newErrors.name = "Name is required";
     } else if (form.name.trim().length < VALIDATION_RULES.name.minLength) {
@@ -57,14 +54,12 @@ export default function Contact() {
       newErrors.name = `Name must be less than ${VALIDATION_RULES.name.maxLength} characters`;
     }
 
-    // Email validation
     if (!form.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!VALIDATION_RULES.email.pattern.test(form.email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Subject validation
     if (!form.subject.trim()) {
       newErrors.subject = "Subject is required";
     } else if (form.subject.trim().length < VALIDATION_RULES.subject.minLength) {
@@ -73,7 +68,6 @@ export default function Contact() {
       newErrors.subject = `Subject must be less than ${VALIDATION_RULES.subject.maxLength} characters`;
     }
 
-    // Message validation
     if (!form.message.trim()) {
       newErrors.message = "Message is required";
     } else if (form.message.trim().length < VALIDATION_RULES.message.minLength) {
@@ -86,19 +80,21 @@ export default function Contact() {
     return Object.keys(newErrors).length === 0;
   }, [form]);
 
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-    
-    // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
-    }
-  }, [errors]);
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setForm((prev) => ({ ...prev, [name]: value }));
+
+      if (errors[name]) {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+      }
+    },
+    [errors]
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!canSubmit()) {
       setStatus("⏳ Please wait a moment before sending another message");
       return;
@@ -112,25 +108,21 @@ export default function Contact() {
     setLoading(true);
     setStatus("");
     setLastSubmissionTime(Date.now());
-    
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      
+
       const data = await res.json();
-      
+
       if (res.ok) {
-        setStatus("✅ Message sent successfully! I'll get back to you soon.");
+        setStatus("✅ Message sent successfully! I&apos;ll get back to you soon.");
         setForm({ name: "", email: "", subject: "", message: "" });
         setErrors({});
-        
-        // Focus on status message for screen readers
-        if (statusRef.current) {
-          statusRef.current.focus();
-        }
+        if (statusRef.current) statusRef.current.focus();
       } else {
         setStatus(`❌ Failed to send message: ${data.error || "Unknown error"}`);
       }
@@ -142,47 +134,31 @@ export default function Contact() {
     }
   };
 
-
   useEffect(() => {
     if (!leftCardRef.current || !rightCardRef.current) return;
 
-    // Left card animation
     const leftTrigger = ScrollTrigger.create({
       trigger: leftCardRef.current,
       start: "top 90%",
       animation: gsap.fromTo(
         leftCardRef.current,
         { x: -60, opacity: 0, scale: 0.95 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        }
+        { x: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
       ),
       toggleActions: "play none none none",
     });
 
-    // Right card animation
     const rightTrigger = ScrollTrigger.create({
       trigger: rightCardRef.current,
       start: "top 90%",
       animation: gsap.fromTo(
         rightCardRef.current,
         { x: 50, opacity: 0, scale: 0.95 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        }
+        { x: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
       ),
       toggleActions: "play none none none",
     });
 
-    // Form inputs animation
     const inputTriggers = [];
     if (inputRefs.current.length) {
       inputRefs.current.forEach((input, i) => {
@@ -193,13 +169,7 @@ export default function Contact() {
             animation: gsap.fromTo(
               input,
               { y: 50, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                duration: 0.6,
-                delay: i * 0.1,
-                ease: "power3.out",
-              }
+              { y: 0, opacity: 1, duration: 0.6, delay: i * 0.1, ease: "power3.out" }
             ),
           });
           inputTriggers.push(trigger);
@@ -207,18 +177,15 @@ export default function Contact() {
       });
     }
 
-    // Store triggers for cleanup
     scrollTriggers.current = [leftTrigger, rightTrigger, ...inputTriggers];
-
     return () => {
-      // Only kill this component's ScrollTrigger instances
-      scrollTriggers.current.forEach(trigger => trigger.kill());
+      scrollTriggers.current.forEach((trigger) => trigger.kill());
       scrollTriggers.current = [];
     };
   }, []);
 
   return (
-    <section 
+    <section
       className="py-24 relative mt-24 border-t border-[#13adff] border-b mb-16 overflow-hidden rounded-[40px] px-6"
       aria-labelledby="contact-heading"
     >
@@ -233,16 +200,16 @@ export default function Contact() {
           aria-label="Contact information"
         >
           <h2 id="contact-heading" className="text-3xl font-bold font-Bebas text-[#00a6ff]">
-            Let's Talk
+            Let&apos;s Talk
           </h2>
           <p className="text-white/90 leading-relaxed">
-            Whether you've got a crazy idea, need a fresh website, or just feel like saying hi, I'm always up for a good conversation and new connections.
+            Whether you&apos;ve got a crazy idea, need a fresh website, or just feel like saying hi, I&apos;m always up for a good conversation and new connections.
           </p>
           <div className="space-y-4 text-white/80" role="list">
             <p role="listitem">
               📧 <span className="font-bold">Email:</span>{" "}
-              <a 
-                href={`mailto:${PERSONAL_INFO.email}`} 
+              <a
+                href={`mailto:${PERSONAL_INFO.email}`}
                 className="hover:underline focus:outline-none focus:ring-2 focus:ring-[#13adff] focus:ring-offset-2 rounded"
                 aria-label={`Send email to ${PERSONAL_INFO.email}`}
               >
@@ -251,8 +218,8 @@ export default function Contact() {
             </p>
             <p role="listitem">
               📱 <span className="font-bold">Phone:</span>{" "}
-              <a 
-                href={`tel:${PERSONAL_INFO.phone.replace(/\s/g, '')}`} 
+              <a
+                href={`tel:${PERSONAL_INFO.phone.replace(/\s/g, "")}`}
                 className="hover:underline focus:outline-none focus:ring-2 focus:ring-[#13adff] focus:ring-offset-2 rounded"
                 aria-label={`Call ${PERSONAL_INFO.phone}`}
               >
@@ -288,10 +255,13 @@ export default function Contact() {
           <div className="text-center mb-6">
             <p className="text-white/90 mt-3 max-w-2xl mx-auto">
               Got a project in mind or just want to say hello?{" "}
-              <span className="text-[#0caaff]">Drop a message and I'll reply faster than light ⚡</span>
+              <span className="text-[#0caaff]">
+                Drop a message and I&apos;ll reply faster than light ⚡
+              </span>
             </p>
           </div>
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6" noValidate>
             {INPUT_FIELDS.map((field, i) => (
               <div key={field} className="space-y-1">
@@ -300,20 +270,20 @@ export default function Contact() {
                   name={field}
                   value={form[field]}
                   onChange={handleChange}
-                  placeholder={`Your ${field.charAt(0).toUpperCase() + field.slice(1)}`} 
+                  placeholder={`Your ${field.charAt(0).toUpperCase() + field.slice(1)}`}
                   required
                   ref={(el) => (inputRefs.current[i] = el)}
                   className={`w-full p-4 rounded-xl bg-white/20 text-white placeholder-white/60 
                   focus:outline-none focus:ring-2 focus:ring-[#13adff] transition-all duration-200
-                  ${errors[field] ? 'ring-2 ring-red-400 bg-red-500/10' : ''}`}
+                  ${errors[field] ? "ring-2 ring-red-400 bg-red-500/10" : ""}`}
                   aria-label={`${field.charAt(0).toUpperCase() + field.slice(1)} input`}
                   aria-describedby={errors[field] ? `${field}-error` : undefined}
-                  aria-invalid={errors[field] ? 'true' : 'false'}
+                  aria-invalid={errors[field] ? "true" : "false"}
                 />
                 {errors[field] && (
-                  <p 
-                    id={`${field}-error`} 
-                    className="text-red-400 text-sm mt-1" 
+                  <p
+                    id={`${field}-error`}
+                    className="text-red-400 text-sm mt-1"
                     role="alert"
                     aria-live="polite"
                   >
@@ -322,7 +292,7 @@ export default function Contact() {
                 )}
               </div>
             ))}
-            
+
             <div className="space-y-1">
               <textarea
                 name="message"
@@ -334,15 +304,15 @@ export default function Contact() {
                 ref={(el) => (inputRefs.current[3] = el)}
                 className={`w-full p-4 rounded-xl bg-white/20 text-white placeholder-white/60 
                 focus:outline-none focus:ring-2 focus:ring-[#13adff] transition-all duration-200 resize-none
-                ${errors.message ? 'ring-2 ring-red-400 bg-red-500/10' : ''}`}
+                ${errors.message ? "ring-2 ring-red-400 bg-red-500/10" : ""}`}
                 aria-label="Message input"
-                aria-describedby={errors.message ? 'message-error' : undefined}
-                aria-invalid={errors.message ? 'true' : 'false'}
+                aria-describedby={errors.message ? "message-error" : undefined}
+                aria-invalid={errors.message ? "true" : "false"}
               />
               {errors.message && (
-                <p 
-                  id="message-error" 
-                  className="text-red-400 text-sm mt-1" 
+                <p
+                  id="message-error"
+                  className="text-red-400 text-sm mt-1"
                   role="alert"
                   aria-live="polite"
                 >
@@ -362,8 +332,22 @@ export default function Contact() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 
+7.962 0 014 12H0c0 3.042 1.135 5.824 3 
+7.938l3-2.647z"
+                    />
                   </svg>
                   Sending...
                 </span>
@@ -372,9 +356,9 @@ export default function Contact() {
               )}
             </button>
           </form>
-          
+
           {status && (
-            <div 
+            <div
               ref={statusRef}
               className="text-center mt-4 p-3 rounded-lg bg-white/10 backdrop-blur-sm"
               role="status"
