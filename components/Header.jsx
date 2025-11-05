@@ -58,9 +58,9 @@ export default function Header() {
           </div>
 
           {/* Right quote with stars */}
-          <div className="fade-right text-right max-w-xs">
+          <div className="fade-right text-right max-w-xs absolute right-[80px]">
             <div className="flex justify-end text-yellow-400 text-2xl">★★★★</div>
-            <p className="text-lg italic font-light font-Bebas mt-2">
+            <p className="text-lg italic font-light font-Bebas mt-2 ">
               &quot;A landing page isn&apos;t about showing everything you do. It&apos;s about showing just enough to make someone act.&quot;
             </p>
             <p className="text-sm font-medium mt-1">- Osman Goni, Front-End Expert</p>

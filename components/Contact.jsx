@@ -324,7 +324,7 @@ export default function Contact() {
             <button
               type="submit"
               disabled={loading || !canSubmit()}
-              className="w-full py-4 bg-[#13adff] text-black font-bold rounded-xl 
+              className="w-full py-4 bg-[#FF7800] text-black font-bold rounded-xl 
               hover:bg-[#09c6ff] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
               focus:outline-none focus:ring-2 focus:ring-[#13adff] focus:ring-offset-2 relative"
               aria-label={loading ? "Sending message, please wait" : "Send message"}

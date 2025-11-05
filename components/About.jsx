@@ -159,7 +159,7 @@ const About = () => {
           className="border border-gray-200 rounded-3xl p-6 flex flex-col items-center text-center  shadow-lg transition-transform duration-500 hover:scale-105 w-full sm:w-[350px] lg:w-[400px] mx-auto"
         >
           <Image
-            src="/pic54.png"
+            src="/profile.png"
             width={500}
             height={500}
             alt="King of Front End"
