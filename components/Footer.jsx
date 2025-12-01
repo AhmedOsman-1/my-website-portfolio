@@ -3,6 +3,7 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { Linkedin, Github, Twitter } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,56 +32,88 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="bg-black/40 text-white py-16 px-6 rounded-t-[40px] border-t border-[#13adff] rounded-b-[40px] border-b overflow-hidden relative"
+      className="bg-black/40 text-white py-16 px-6 rounded-t-[40px] border-t border-[#13adff] overflow-hidden relative"
     >
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         {/* Logo & Tagline */}
         <div>
-          <h2 className="text-2xl font-bold text-[#13adff]">OsmanDev</h2>
-          <p className="text-white/70 mt-2 leading-relaxed">
-            Crafting modern web experiences. Let’s build something amazing together.
+          <h2 className="text-3xl font-bold text-[#00a6ff]">OsmanDev</h2>
+          <p className="text-white/70 mt-3 leading-relaxed">
+            I craft modern web experiences people love. <br />
+            Let’s build something extraordinary together.
           </p>
         </div>
 
         {/* Quick Links */}
         <div>
-          <h3 className="font-semibold mb-2 text-[#13adff]">Quick Links</h3>
+          <h3 className="font-semibold mb-4 text-[#13adff]">Quick Links</h3>
           <ul className="space-y-2">
-            <li>
-              <a href="#home" className="hover:text-[#0caaff] transition">Home</a>
-            </li>
-            <li>
-              <a href="#projects" className="hover:text-[#0caaff] transition">Projects</a>
-            </li>
-            <li>
-              <a href="#about" className="hover:text-[#0caaff] transition">About</a>
-            </li>
-            <li>
-              <a href="#contact" className="hover:text-[#0caaff] transition">Contact</a>
-            </li>
+            {["Home", "Projects", "About", "Contact"].map((link) => (
+              <li key={link}>
+                <a
+                  href={`#${link.toLowerCase()}`}
+                  className="hover:text-[#0caaff] transition-colors duration-200"
+                >
+                  {link}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
 
         {/* Contact Info */}
         <div>
-          <h3 className="font-semibold mb-2 text-[#13adff]">Contact</h3>
-          <p>📧 <a href="mailto:osmangonidevx@gmail.com" className="hover:underline">osmangonidevx@gmail.com</a></p>
-          <p>📱 <a href="tel:+8801874787550" className="hover:underline">+880 1874-787550</a></p>
-          <p>📍 Chittagong, Bangladesh</p>
+          <h3 className="font-semibold mb-4 text-[#13adff]">Contact</h3>
+          <ul className="space-y-2 text-white/80">
+            <li>
+              -
+              <a
+                href="mailto:osmangonidevx@gmail.com"
+                className="hover:underline"
+              >
+                  osmangonidevx@gmail.com
+              </a>
+            </li>
+            <li>
+              Phone : {" "}
+              <a
+                href="tel:+8801874787550"
+                className="hover:underline"
+              >
+                +880 1874-787550
+              </a>
+            </li>
+            <li>Location : Chittagong, Bangladesh</li>
+          </ul>
         </div>
 
         {/* Socials */}
         <div>
-          <h3 className="font-semibold mb-2 text-[#13adff]">Follow Me</h3>
-          <div className="flex space-x-4 mt-2">
-            <a href="https://www.linkedin.com/in/osman-goni-devx" target="_blank" rel="noreferrer" className="hover:text-[#0caaff] transition">
-              LinkedIn
+          <h3 className="font-semibold mb-4 text-[#13adff]">Follow Me</h3>
+          <div className="flex flex-col space-y-4 mt-2">
+            <a
+              href="https://www.linkedin.com/in/osman-goni-devx"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#0caaff] transition-colors duration-200 flex items-center gap-1"
+            >
+              <Linkedin size={18} /> LinkedIn
             </a>
-            <a href="https://github.com/osman-devx" target="_blank" rel="noreferrer" className="hover:text-[#0caaff] transition">
-              GitHub
+            <a
+              href="https://github.com/osman-devx"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#0caaff] transition-colors duration-200 flex items-center gap-1"
+            >
+              <Github size={18} /> GitHub
             </a>
-            <a href="https://twitter.com/osman-devx" target="_blank" rel="noreferrer" className="hover:text-[#0caaff] transition">
-              Twitter
+            <a
+              href="https://twitter.com/osman-devx"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#0caaff] transition-colors duration-200 flex items-center gap-1"
+            >
+              <Twitter size={18} /> Twitter
             </a>
           </div>
         </div>
@@ -88,7 +121,7 @@ export default function Footer() {
 
       {/* Bottom Copyright */}
       <p className="text-center text-white/50 mt-12 text-sm">
-        ⚡ © 2025 Osman. All rights reserved.
+        © 2025 OsmanDev. All rights reserved.
       </p>
     </footer>
   );

@@ -146,14 +146,14 @@ const About = () => {
 
   return (
     <section className=" rounded-[50px] border border-white/30 bg-white shadow-xl mt-12 w-full px-[10%] py-16 scroll-mt-20 overflow-hidden" >
-      {/* Section Header */}
+     
       <div className="text-center mb-12" ref={headingRef}>
         <h4 className="text-lg font-Poppins text-black mb-2">Introduction</h4>
         <h2 className="text-5xl font-Bebas font-bold text-slate-900">Who am I?</h2>
       </div>
 
       <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
-        {/* Profile Card */}
+        
         <div
           ref={profileRef}
           className="border border-gray-200 rounded-3xl p-6 flex flex-col items-center text-center  shadow-lg transition-transform duration-500 hover:scale-105 w-full sm:w-[350px] lg:w-[400px] mx-auto"
