@@ -30,9 +30,10 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer
+    <footer 
       ref={footerRef}
       className="bg-black/40 text-white py-16 px-6 rounded-t-[40px] border-t border-[#13adff] overflow-hidden relative"
+      style={{ backgroundImage: "url('/bg-card.jpeg')" }}
     >
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         {/* Logo & Tagline */}

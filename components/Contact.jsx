@@ -6,430 +6,269 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Personal information constants
 const PERSONAL_INFO = {
-    email: "osmangonidevx@gmail.com",
-    phone: "+880 1874-787550",
-    linkedin: "https://www.linkedin.com/in/osman-goni-devx",
-    location: "Chittagong, Bangladesh",
+  email: "osmangonidevx@gmail.com",
+  phone: "+8801874787550",
+  linkedin: "https://www.linkedin.com/in/osman-goni-devx",
+  location: "Chittagong, Bangladesh",
 };
 
 const VALIDATION_RULES = {
-    name: { minLength: 2, maxLength: 50 },
-    email: { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
-    subject: { minLength: 5, maxLength: 100 },
-    message: { minLength: 10, maxLength: 500 },
+  name: { minLength: 2, maxLength: 50 },
+  email: { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+  subject: { minLength: 5, maxLength: 100 },
+  message: { minLength: 10, maxLength: 500 },
 };
 
 const INPUT_FIELDS = ["name", "email", "subject"];
 
 export default function Contact() {
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
+  const [errors, setErrors] = useState({});
+  const [lastSubmissionTime, setLastSubmissionTime] = useState(0);
+
+  const leftCardRef = useRef(null);
+  const rightCardRef = useRef(null);
+  const inputRefs = useRef([]);
+  const statusRef = useRef(null);
+  const scrollTriggers = useRef([]);
+
+  const canSubmit = useCallback(() => Date.now() - lastSubmissionTime > 2000, [lastSubmissionTime]);
+
+  const validateForm = useCallback(() => {
+    const newErrors = {};
+
+    if (!form.name.trim()) newErrors.name = "Name is required";
+    else if (form.name.length < VALIDATION_RULES.name.minLength)
+      newErrors.name = `Name must be at least ${VALIDATION_RULES.name.minLength} characters`;
+    else if (form.name.length > VALIDATION_RULES.name.maxLength)
+      newErrors.name = `Name must be less than ${VALIDATION_RULES.name.maxLength} characters`;
+
+    if (!form.email.trim()) newErrors.email = "Email is required";
+    else if (!VALIDATION_RULES.email.pattern.test(form.email))
+      newErrors.email = "Please enter a valid email";
+
+    if (!form.subject.trim()) newErrors.subject = "Subject is required";
+    else if (form.subject.length < VALIDATION_RULES.subject.minLength)
+      newErrors.subject = `Subject must be at least ${VALIDATION_RULES.subject.minLength} characters`;
+    else if (form.subject.length > VALIDATION_RULES.subject.maxLength)
+      newErrors.subject = `Subject must be less than ${VALIDATION_RULES.subject.maxLength} characters`;
+
+    if (!form.message.trim()) newErrors.message = "Message is required";
+    else if (form.message.length < VALIDATION_RULES.message.minLength)
+      newErrors.message = `Message must be at least ${VALIDATION_RULES.message.minLength} characters`;
+    else if (form.message.length > VALIDATION_RULES.message.maxLength)
+      newErrors.message = `Message must be less than ${VALIDATION_RULES.message.maxLength} characters`;
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [form]);
+
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
+  }, [errors]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!canSubmit()) return setStatus("⏳ Please wait a moment before sending another message");
+    if (!validateForm()) return setStatus("Please fix the errors below");
+
+    setLoading(true);
+    setStatus("");
+    setLastSubmissionTime(Date.now());
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatus("✅ Message sent successfully! I'll get back to you soon.");
+        setForm({ name: "", email: "", subject: "", message: "" });
+        setErrors({});
+        statusRef.current?.focus();
+      } else setStatus(`❌ Failed to send: ${data.error || "Unknown error"}`);
+    } catch {
+      setStatus("❌ Network error. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!leftCardRef.current || !rightCardRef.current) return;
+
+    const leftTrigger = ScrollTrigger.create({
+      trigger: leftCardRef.current,
+      start: "top 90%",
+      animation: gsap.fromTo(
+        leftCardRef.current,
+        { x: -40, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.7, ease: "power3.out" }
+      ),
+      toggleActions: "play none none none",
     });
-    const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState("");
-    const [errors, setErrors] = useState({});
-    const [lastSubmissionTime, setLastSubmissionTime] = useState(0);
 
-    const leftCardRef = useRef(null);
-    const rightCardRef = useRef(null);
-    const inputRefs = useRef([]);
-    const statusRef = useRef(null);
-    const scrollTriggers = useRef([]);
+    const rightTrigger = ScrollTrigger.create({
+      trigger: rightCardRef.current,
+      start: "top 90%",
+      animation: gsap.fromTo(
+        rightCardRef.current,
+        { x: 40, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.7, ease: "power3.out" }
+      ),
+      toggleActions: "play none none none",
+    });
 
-    const canSubmit = useCallback(() => {
-        const now = Date.now();
-        return now - lastSubmissionTime > 2000;
-    }, [lastSubmissionTime]);
+    const inputTriggers = inputRefs.current.map((input, i) => {
+      if (!input) return null;
+      return ScrollTrigger.create({
+        trigger: rightCardRef.current,
+        start: "top 90%",
+        animation: gsap.fromTo(
+          input,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, delay: i * 0.08, ease: "power3.out" }
+        ),
+      });
+    }).filter(Boolean);
 
-    const validateForm = useCallback(() => {
-        const newErrors = {};
+    scrollTriggers.current = [leftTrigger, rightTrigger, ...inputTriggers];
 
-        if (!form.name.trim()) {
-            newErrors.name = "Name is required";
-        } else if (form.name.trim().length < VALIDATION_RULES.name.minLength) {
-            newErrors.name = `Name must be at least ${VALIDATION_RULES.name.minLength} characters`;
-        } else if (form.name.trim().length > VALIDATION_RULES.name.maxLength) {
-            newErrors.name = `Name must be less than ${VALIDATION_RULES.name.maxLength} characters`;
-        }
+    return () => scrollTriggers.current.forEach(t => t.kill());
+  }, []);
 
-        if (!form.email.trim()) {
-            newErrors.email = "Email is required";
-        } else if (!VALIDATION_RULES.email.pattern.test(form.email)) {
-            newErrors.email = "Please enter a valid email address";
-        }
+  return (
+    <section id="contact" className="py-24 px-4 md:px-8 bg-transparent" aria-labelledby="contact-heading">
+      <div  className="max-w-5xl mx-auto  bg-white rounded-[32px] shadow-[0_18px_60px_rgba(15,23,42,0.12)] px-10 py-12 md:px-14 md:py-14 grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+        {/* Left info */}
+        <div ref={leftCardRef} className="space-y-6">
+          <p className="text-xs tracking-[0.25em] uppercase text-sky-500">We&apos;re here to help you</p>
+          <h2 id="contact-heading" className="text-3xl md:text-4xl font-semibold text-slate-900 leading-tight">
+            <span className="font-medium">Discuss</span>{" "}
+            <span className="font-bold">Your Project Needs</span>
+          </h2>
+          <p className="text-sm text-slate-500 max-w-sm">
+            Looking for a high-quality, conversion-focused website tailored to your business? Reach out and let&apos;s plan the perfect solution.
+          </p>
 
-        if (!form.subject.trim()) {
-            newErrors.subject = "Subject is required";
-        } else if (
-            form.subject.trim().length < VALIDATION_RULES.subject.minLength
-        ) {
-            newErrors.subject = `Subject must be at least ${VALIDATION_RULES.subject.minLength} characters`;
-        } else if (
-            form.subject.trim().length > VALIDATION_RULES.subject.maxLength
-        ) {
-            newErrors.subject = `Subject must be less than ${VALIDATION_RULES.subject.maxLength} characters`;
-        }
+          <div className="mt-6 space-y-4 text-sm text-slate-600">
+            {Object.entries(PERSONAL_INFO).map(([key, value]) => {
+              let icon = "✉️";
+              if (key === "phone") icon = "📞";
+              else if (key === "linkedin") icon = "💼";
+              else if (key === "location") icon = "📍";
 
-        if (!form.message.trim()) {
-            newErrors.message = "Message is required";
-        } else if (
-            form.message.trim().length < VALIDATION_RULES.message.minLength
-        ) {
-            newErrors.message = `Message must be at least ${VALIDATION_RULES.message.minLength} characters`;
-        } else if (
-            form.message.trim().length > VALIDATION_RULES.message.maxLength
-        ) {
-            newErrors.message = `Message must be less than ${VALIDATION_RULES.message.maxLength} characters`;
-        }
+              const link = key === "email" ? `mailto:${value}` :
+                           key === "phone" ? `tel:${value}` :
+                           key === "linkedin" ? value : null;
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    }, [form]);
-
-    const handleChange = useCallback(
-        (e) => {
-            const { name, value } = e.target;
-            setForm((prev) => ({ ...prev, [name]: value }));
-
-            if (errors[name]) {
-                setErrors((prev) => ({ ...prev, [name]: "" }));
-            }
-        },
-        [errors]
-    );
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!canSubmit()) {
-            setStatus("⏳ Please wait a moment before sending another message");
-            return;
-        }
-
-        if (!validateForm()) {
-            setStatus("Please fix the errors below");
-            return;
-        }
-
-        setLoading(true);
-        setStatus("");
-        setLastSubmissionTime(Date.now());
-
-        try {
-            const res = await fetch("/api/contact", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                setStatus(
-                    "Message sent successfully! I'll get back to you soon."
-                );
-                setForm({ name: "", email: "", subject: "", message: "" });
-                setErrors({});
-                if (statusRef.current) statusRef.current.focus();
-            } else {
-                setStatus(
-                    `Failed to send message: ${
-                        data.error || "Unknown error"
-                    }`
-                );
-            }
-        } catch (error) {
-            console.error("Contact form error:", error);
-            setStatus(
-                " Network error. Please check your connection and try again."
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (!leftCardRef.current || !rightCardRef.current) return;
-
-        const leftTrigger = ScrollTrigger.create({
-            trigger: leftCardRef.current,
-            start: "top 90%",
-            animation: gsap.fromTo(
-                leftCardRef.current,
-                { x: -60, opacity: 0, scale: 0.95 },
-                {
-                    x: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.8,
-                    ease: "power3.out",
-                }
-            ),
-            toggleActions: "play none none none",
-        });
-
-        const rightTrigger = ScrollTrigger.create({
-            trigger: rightCardRef.current,
-            start: "top 90%",
-            animation: gsap.fromTo(
-                rightCardRef.current,
-                { x: 50, opacity: 0, scale: 0.95 },
-                {
-                    x: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.8,
-                    ease: "power3.out",
-                }
-            ),
-            toggleActions: "play none none none",
-        });
-
-        const inputTriggers = [];
-        if (inputRefs.current.length) {
-            inputRefs.current.forEach((input, i) => {
-                if (input) {
-                    const trigger = ScrollTrigger.create({
-                        trigger: rightCardRef.current,
-                        start: "top 90%",
-                        animation: gsap.fromTo(
-                            input,
-                            { y: 50, opacity: 0 },
-                            {
-                                y: 0,
-                                opacity: 1,
-                                duration: 0.6,
-                                delay: i * 0.1,
-                                ease: "power3.out",
-                            }
-                        ),
-                    });
-                    inputTriggers.push(trigger);
-                }
-            });
-        }
-
-        scrollTriggers.current = [leftTrigger, rightTrigger, ...inputTriggers];
-
-        return () => {
-            scrollTriggers.current.forEach((trigger) => trigger.kill());
-            scrollTriggers.current = [];
-        };
-    }, []);
-
-    return (
-        <section
-            className="py-24 relative mt-24 border-t border-[#13adff] border-b mb-16 overflow-hidden rounded-[40px] px-6"
-            aria-labelledby="contact-heading">
-            <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                {/* Left Card */}
-                <div
-                    ref={leftCardRef}
-                    className="bg-white/20 backdrop-blur-md rounded-[32px] shadow-[0_15px_35px_rgba(0,200,255,0.15)]
-          p-10 flex flex-col justify-between min-h-[500px] hover:scale-105
-          hover:shadow-[0_25px_50px_rgba(0,200,255,0.3)] transition-transform duration-300"
-                    role="complementary"
-                    aria-label="Contact information">
-                    <h2
-                        id="contact-heading"
-                        className="text-3xl font-bold font-Bebas text-[#00a6ff]">
-                        Let&apos;s Talk
-                    </h2>
-                    <p className="text-white/90 leading-relaxed">
-                        Whether you&apos;ve got a crazy idea, need a fresh
-                        website, or just feel like saying hi, I&apos;m always up
-                        for a good conversation and new connections.
-                    </p>
-                    <div className="space-y-4 text-white/80" role="list">
-                        <p role="listitem">
-                            📧 <span className="font-bold">Email:</span>{" "}
-                            <a
-                                href={`mailto:${PERSONAL_INFO.email}`}
-                                className="hover:underline focus:outline-none focus:ring-2 focus:ring-[#13adff] focus:ring-offset-2 rounded"
-                                aria-label={`Send email to ${PERSONAL_INFO.email}`}>
-                                {PERSONAL_INFO.email}
-                            </a>
-                        </p>
-                        <p role="listitem">
-                            📱 <span className="font-bold">Phone:</span>{" "}
-                            <a
-                                href={`tel:${PERSONAL_INFO.phone.replace(
-                                    /\s/g,
-                                    ""
-                                )}`}
-                                className="hover:underline focus:outline-none focus:ring-2 focus:ring-[#13adff] focus:ring-offset-2 rounded"
-                                aria-label={`Call ${PERSONAL_INFO.phone}`}>
-                                {PERSONAL_INFO.phone}
-                            </a>
-                        </p>
-                        <p role="listitem">
-                            💼 <span className="font-bold">LinkedIn:</span>{" "}
-                            <a
-                                href={PERSONAL_INFO.linkedin}
-                                target="_blank"
-                                rel="noreferrer noopener"
-                                className="hover:underline focus:outline-none focus:ring-2 focus:ring-[#13adff] focus:ring-offset-2 rounded"
-                                aria-label="Visit LinkedIn profile (opens in new tab)">
-                                linkedin.com/in/osman-goni
-                            </a>
-                        </p>
-                        <p role="listitem">
-                            📍 <span className="font-bold">Location:</span>{" "}
-                            {PERSONAL_INFO.location}
-                        </p>
-                    </div>
+              return (
+                <div key={key} className="flex items-start gap-3">
+                  <span className="mt-0.5 text-sky-500">{icon}</span>
+                  <div>
+                    <p className="font-semibold text-slate-800">{key.charAt(0).toUpperCase() + key.slice(1)}</p>
+                    {link ? (
+                      <a href={link} target={key === "linkedin" ? "_blank" : undefined} rel="noreferrer" className="hover:text-sky-600">
+                        {value}
+                      </a>
+                    ) : <p>{value}</p>}
+                  </div>
                 </div>
+              );
+            })}
+          </div>
+        </div>
 
-                {/* Right Card */}
-                <div
-                    ref={rightCardRef}
-                    className="bg-white/20 backdrop-blur-md rounded-[32px] shadow-[0_15px_35px_rgba(0,200,255,0.15)]
-          p-10 hover:scale-105 hover:shadow-[0_25px_50px_rgba(0,200,255,0.3)] transition-transform duration-300 relative"
-                    role="form"
-                    aria-label="Contact form">
-                    <div className="text-center mb-6">
-                        <p className="text-white/90 mt-3 max-w-2xl mx-auto">
-                            Got a project in mind or just want to say hello?{" "}
-                            <span className="text-[#0caaff]">
-                                Drop a message and I&apos;ll reply faster than
-                                light ⚡
-                            </span>
-                        </p>
-                    </div>
+        {/* Right form */}
+        <div ref={rightCardRef} className="bg-slate-50 rounded-[26px] shadow-[0_10px_40px_rgba(15,23,42,0.06)] px-6 py-7 md:px-8 md:py-8" role="form" aria-label="Contact form">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            {INPUT_FIELDS.map((field, i) => (
+              <div key={field} className="space-y-1">
+                <label htmlFor={field} className="text-xs font-medium text-slate-500">
+                  {field === "subject" ? "Project type / Subject" : field.charAt(0).toUpperCase() + field.slice(1)}
+                </label>
+                <input
+                  id={field}
+                  type={field === "email" ? "email" : "text"}
+                  name={field}
+                  value={form[field]}
+                  onChange={handleChange}
+                  placeholder={
+                    field === "name" ? "Your name" :
+                    field === "email" ? "name@example.com" :
+                    "Tell me what you need"
+                  }
+                  required
+                  ref={el => inputRefs.current[i] = el}
+                  className={`w-full h-11 px-3 rounded-xl border text-sm bg-white/80 text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition ${
+                    errors[field] ? "border-red-400 focus:ring-red-400" : "border-slate-200"
+                  }`}
+                  aria-invalid={errors[field] ? "true" : "false"}
+                  aria-describedby={errors[field] ? `${field}-error` : undefined}
+                />
+                {errors[field] && <p id={`${field}-error`} className="text-red-500 text-xs" role="alert">{errors[field]}</p>}
+              </div>
+            ))}
 
-                    {/* Form */}
-                    <form
-                        onSubmit={handleSubmit}
-                        className="space-y-6"
-                        noValidate>
-                        {INPUT_FIELDS.map((field, i) => (
-                            <div key={field} className="space-y-1">
-                                <input
-                                    type={field === "email" ? "email" : "text"}
-                                    name={field}
-                                    value={form[field]}
-                                    onChange={handleChange}
-                                    placeholder={`Your ${
-                                        field.charAt(0).toUpperCase() +
-                                        field.slice(1)
-                                    }`}
-                                    required
-                                    ref={(el) => (inputRefs.current[i] = el)}
-                                    className={`w-full p-4 rounded-xl bg-white/20 text-white placeholder-white/60
-                  focus:outline-none focus:ring-2 focus:ring-[#13adff] transition-all duration-200
-                  ${errors[field] ? "ring-2 ring-red-400 bg-red-500/10" : ""}`}
-                                    aria-label={`${
-                                        field.charAt(0).toUpperCase() +
-                                        field.slice(1)
-                                    } input`}
-                                    aria-describedby={
-                                        errors[field]
-                                            ? `${field}-error`
-                                            : undefined
-                                    }
-                                    aria-invalid={
-                                        errors[field] ? "true" : "false"
-                                    }
-                                />
-                                {errors[field] && (
-                                    <p
-                                        id={`${field}-error`}
-                                        className="text-red-400 text-sm mt-1"
-                                        role="alert"
-                                        aria-live="polite">
-                                        {errors[field]}
-                                    </p>
-                                )}
-                            </div>
-                        ))}
-
-                        <div className="space-y-1">
-                            <textarea
-                                name="message"
-                                value={form.message}
-                                onChange={handleChange}
-                                placeholder="Your Message"
-                                rows={5}
-                                required
-                                ref={(el) => (inputRefs.current[3] = el)}
-                                className={`w-full p-4 rounded-xl bg-white/20 text-white placeholder-white/60
-                focus:outline-none focus:ring-2 focus:ring-[#13adff] transition-all duration-200 resize-none
-                ${errors.message ? "ring-2 ring-red-400 bg-red-500/10" : ""}`}
-                                aria-label="Message input"
-                                aria-describedby={
-                                    errors.message ? "message-error" : undefined
-                                }
-                                aria-invalid={errors.message ? "true" : "false"}
-                            />
-                            {errors.message && (
-                                <p
-                                    id="message-error"
-                                    className="text-red-400 text-sm mt-1"
-                                    role="alert"
-                                    aria-live="polite">
-                                    {errors.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={loading || !canSubmit()}
-                            className="w-full py-4 bg-[#FF7800] text-black font-bold rounded-xl
-              hover:bg-[#09c6ff] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-              focus:outline-none focus:ring-2 focus:ring-[#13adff] focus:ring-offset-2 relative"
-                            aria-label={
-                                loading
-                                    ? "Sending message, please wait"
-                                    : "Send message"
-                            }>
-                            {loading ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    <svg
-                                        className="animate-spin h-5 w-5"
-                                        viewBox="0 0 24 24">
-                                        <circle
-                                            className="opacity-25"
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                            stroke="currentColor"
-                                            strokeWidth="4"
-                                            fill="none"
-                                        />
-                                        <path
-                                            className="opacity-75"
-                                            fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962
-7.962 0 014 12H0c0 3.042 1.135 5.824 3
-7.938l3-2.647z"
-                                        />
-                                    </svg>
-                                    Sending...
-                                </span>
-                            ) : (
-                                "Send Message"
-                            )}
-                        </button>
-                    </form>
-
-                    {status && (
-                        <div
-                            ref={statusRef}
-                            className="text-center mt-4 p-3 rounded-lg bg-white/10 backdrop-blur-sm"
-                            role="status"
-                            aria-live="polite"
-                            tabIndex={-1}>
-                            <p className="text-white font-medium">{status}</p>
-                        </div>
-                    )}
-                </div>
+            <div className="space-y-1">
+              <label htmlFor="message" className="text-xs font-medium text-slate-500">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                placeholder="Briefly describe your project, timeline, and budget…"
+                rows={4}
+                required
+                ref={el => inputRefs.current[3] = el}
+                className={`w-full px-3 py-3 rounded-xl border text-sm bg-white/80 text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition resize-none ${
+                  errors.message ? "border-red-400 focus:ring-red-400" : "border-slate-200"
+                }`}
+                aria-invalid={errors.message ? "true" : "false"}
+                aria-describedby={errors.message ? "message-error" : undefined}
+              />
+              {errors.message && <p id="message-error" className="text-red-500 text-xs" role="alert">{errors.message}</p>}
             </div>
-        </section>
-    );
+
+            <button
+              type="submit"
+              disabled={loading || !canSubmit()}
+              className="w-full h-11 rounded-full bg-sky-600 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-sky-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/70 border-t-transparent rounded-full animate-spin" /> Sending...
+                </>
+              ) : (
+                <>
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-sky-600 text-xs">→</span>
+                  Get a solution
+                </>
+              )}
+            </button>
+          </form>
+
+          {status && (
+            <div ref={statusRef} className="mt-4 px-3 py-2 rounded-lg bg-slate-100 text-xs text-slate-700" role="status" aria-live="polite" tabIndex={-1}>
+              {status}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }

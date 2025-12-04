@@ -35,7 +35,7 @@ export const projects = [
     des: "Simplify your video conferencing experience with Yoom. Seamlessly connect with colleagues and friends.",
     img: "/p2.svg",
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
-    link: "/ui.yoom.com",
+    link: "https://site-on-building.vercel.app/",
   },
   {
     id: 3,
@@ -43,7 +43,7 @@ export const projects = [
     des: "A REAL Software-as-a-Service app with AI features and a payments and credits system using the latest tech stack.",
     img: "/p3.svg",
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/c.svg"],
-    link: "/ui.aiimg.com",
+    link: "https://site-on-building.vercel.app/",
   },
   {
     id: 4,
@@ -51,7 +51,7 @@ export const projects = [
     des: "Recreated the Apple iPhone 15 Pro website, combining GSAP animations and Three.js 3D effects..",
     img: "/p4.svg",
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/three.svg", "/gsap.svg"],
-    link: "/ui.apple.com",
+    link: "https://site-on-building.vercel.app/",
   },
 ];
 
@@ -102,6 +102,7 @@ export const testimonials = [
 export const servicesData = [
   {
     id: 1,
+    type: "service",
     title: "Website Development",
     description:
       "I help you build modern websites designed around your goals. Whether it’s a landing page, a personal portfolio, or a full business/SaaS site, I make sure your website looks great, feels personal, and works perfectly for you.",
@@ -109,6 +110,7 @@ export const servicesData = [
   },
   {
     id: 2,
+    type: "service",
     title: "Web Applications / SPA",
     description:
       "Creating interactive single-page applications (SPAs) using React.js and Next.js with smooth UI/UX and dynamic features that engage users effectively.",
@@ -116,6 +118,7 @@ export const servicesData = [
   },
   {
     id: 3,
+    type: "service",
     title: "UI / UX Enhancements",
     description:
       "Implementing animations, micro-interactions, and intuitive interfaces to enhance user experience and keep your visitors engaged.",
@@ -123,12 +126,14 @@ export const servicesData = [
   },
   {
     id: 4,
+    type: "service",
     title: "API & Third-party Integration",
     description:
       "Integrating REST/MongoDb APIs, payment gateways, analytics, maps, and other third-party services to extend functionality and performance.",
     img: "/api.png",
   },
 ];
+
 
 
 export const companies = [

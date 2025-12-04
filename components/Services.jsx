@@ -120,7 +120,7 @@ export default function Services() {
   };
 
   return (
-    <section className="py-24 relative overflow-hidden bg-cover border-[#13adff] border-t mt-24 bg-center bg-no-repeat rounded-t-[40px] rounded-b-[40px]">
+    <section id="services" className="py-24 relative overflow-hidden bg-cover border-[#13adff] border-t mt-24 bg-center bg-no-repeat rounded-t-[40px] rounded-b-[40px]">
       {/* Heading */}
       <div ref={headingRef} className="text-center mb-12">
         <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold font-Bebas uppercase tracking-wide">

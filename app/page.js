@@ -8,7 +8,7 @@ import Services from "@/components/Services";
 
 export default function Home() {
   return (
-    <main className="bg-white/10 backdrop-blur-lg bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/bg-card.jpeg')" }}>
+    <main className="bg-[#0B0F1A] backdrop-blur-lg bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url()" }}>
    
       <Navbar />
 

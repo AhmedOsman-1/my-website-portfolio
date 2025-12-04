@@ -1,27 +1,25 @@
 "use client";
 
-import { projects } from "@/database/index";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/dist/Draggable";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { useEffect, useRef, useState, useCallback } from "react";
-import Button from "./Button";
 import Card from "./Card";
 import CarouselButtons from "./CarouselButtons";
+import { projects } from "@/database";
 
 gsap.registerPlugin(Draggable, ScrollTrigger);
 
-const RecentProjects = () => {
+export default function RecentProjects() {
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
   const headingRef = useRef(null);
-  const callToActionRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(1);
 
   const getCardsToShow = useCallback(() => {
     if (typeof window !== "undefined") {
-      if (window.innerWidth >= 1024) return 2;
+      if (window.innerWidth >= 1024) return 3;
       if (window.innerWidth >= 768) return 2;
       return 1;
     }
@@ -35,19 +33,17 @@ const RecentProjects = () => {
     return () => window.removeEventListener("resize", resize);
   }, [getCardsToShow]);
 
-  // Draggable + first time staggered animation
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container || !cardsRef.current[0]) return;
+    if (!containerRef.current || !cardsRef.current[0]) return;
 
     const gap = 32;
     const cardWidth = cardsRef.current[0].offsetWidth;
     const totalCards = cardsRef.current.length;
     const lastIndex = Math.max(totalCards - cardsToShow, 0);
 
-    gsap.set(container, { x: 0 });
+    gsap.set(containerRef.current, { x: 0 });
 
-    Draggable.create(container, {
+    Draggable.create(containerRef.current, {
       type: "x",
       inertia: true,
       bounds: { minX: -(lastIndex * (cardWidth + gap)), maxX: 0 },
@@ -59,7 +55,7 @@ const RecentProjects = () => {
       onDragEnd() {
         const idx = Math.round(Math.abs(this.x) / (cardWidth + gap));
         const clamped = Math.min(idx, lastIndex);
-        gsap.to(container, {
+        gsap.to(containerRef.current, {
           x: -clamped * (cardWidth + gap),
           duration: 0.5,
           ease: "power3.out",
@@ -68,10 +64,10 @@ const RecentProjects = () => {
       },
     });
 
-    // **Cards animation like Services section**
+    // Animate cards
     gsap.fromTo(
-      cardsRef.current.filter(Boolean),
-      { y: 50, opacity: 0, scale: 0.95 },
+      cardsRef.current,
+      { y: 60, opacity: 0, scale: 0.95 },
       {
         y: 0,
         opacity: 1,
@@ -101,21 +97,6 @@ const RecentProjects = () => {
         }
       );
     }
-
-    // CTA animation
-    if (callToActionRef.current) {
-      gsap.fromTo(
-        callToActionRef.current,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: { trigger: callToActionRef.current, start: "top 90%", once: true },
-        }
-      );
-    }
   }, [cardsToShow]);
 
   const slide = (direction) => {
@@ -139,21 +120,35 @@ const RecentProjects = () => {
   };
 
   return (
-    <section className="py-24 relative overflow-hidden border-b border-[#13adff] bg-gradient-to-b from-[#073147]/50 via-[#0A2A45]/20 to-[#073147]/40 bg-cover bg-center bg-no-repeat rounded-t-[40px] rounded-b-[40px] mt-24" style={{ backgroundImage: "url('/bg-card.jpg')" }}>
+    <section
+      id="projects"
+      className="py-24 relative overflow-hidden bg-cover border-t border-[hsl(var(--accent))] mt-24 bg-center bg-no-repeat rounded-t-[40px] rounded-b-[40px]"
+      style={{ backgroundImage: "" }}
+    >
       {/* Heading */}
-      <div ref={headingRef}>
-        <h1 className="text-white text-4xl md:text-5xl font-extrabold font-Bebas uppercase text-center mb-4 tracking-wide">
-          See My Latest <span className="text-[#13adff] font-Bebas">Projects</span>
-        </h1>
-        <p className="text-white/70 text-center md:text-lg lg:text-xl max-w-2xl mx-auto mb-16">
-          From concept to execution, delivering seamless functionality and design.
-        </p>
-      </div>
+<div ref={headingRef} className="text-center mb-12">
+  <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold font-Bebas uppercase tracking-wide">
+    Check out my{" "}
+    <span className="text-[hsl(var(--accent))]">latest projects</span>
+  </h1>
+  <p className="text-white/70 md:text-lg lg:text-xl max-w-2xl mx-auto mt-4">
+    From concept to execution, delivering seamless functionality and design.
+  </p>
+  <p className="uppercase font-bold text-[hsl(var(--accent))] mt-6">
+    Here&apos;s what I have built recently
+  </p>
+</div>
+
 
       {/* Cards */}
-      <div ref={containerRef} className="flex gap-8 cursor-grab select-none px-6 will-change-transform" style={{ backgroundImage: "url('/bg-card.jpg')" }}>
+      <div ref={containerRef} className="flex gap-8 cursor-grab select-none px-6 will-change-transform">
         {projects.map((project, i) => (
-          <Card key={project.id} item={project} type="project" cardRef={(el) => (cardsRef.current[i] = el)} />
+          <Card
+            key={project.id}
+            item={project}
+            cardRef={(el) => (cardsRef.current[i] = el)}
+            className="bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] shadow-lg rounded-xl"
+          />
         ))}
       </div>
 
@@ -164,19 +159,6 @@ const RecentProjects = () => {
         disableLeft={currentIndex === 0}
         disableRight={currentIndex >= projects.length - cardsToShow}
       />
-
-      {/* CTA */}
-      <div ref={callToActionRef} className="mt-20 text-center px-6 relative">
-        <p className="text-white/80 text-center md:text-lg lg:text-xl max-w-2xl mx-auto mb-4">Liked my projects?</p>
-        <h2 className="text-[#13adff] text-2xl md:text-3xl font-extrabold font-Outfit mb-6 leading-snug uppercase">
-          free 1:1 power hour call?
-        </h2>
-        <div className="flex justify-center mt-6">
-          <Button href="/contact" text={"Book Appointment"} />
-        </div>
-      </div>
     </section>
   );
-};
-
-export default RecentProjects;
+}

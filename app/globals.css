@@ -2,80 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global Font */
+/* ------------------- Global Font & Body ------------------- */
 * {
   font-family: var(--font-outfit);
 }
 
-/* Primary Button */
-.btn-primary {
-  @apply bg-[#00a6ff] text-black font-semibold rounded-full 
-         hover:bg-[#0095e8] transition duration-300 ease-in-out 
-         transform hover:-translate-y-1 shadow-lg shadow-blue-300/40
-         z-40 px-6 py-2;
+html {
+  scroll-behavior: smooth;
 }
 
-/* Responsive Button Size */
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+  * {
+    @apply border-border;
+  }
+}
+
+/* ------------------- Primary Button ------------------- */
+.btn-primary {
+  @apply font-semibold rounded-full px-6 py-2 shadow-lg transform transition duration-300 ease-in-out z-40 inline-flex items-center justify-center gap-2;
+
+  background-color: #FF7800; /* Brand Accent */
+  color: #000000;            /* Text */
+  box-shadow: 0 4px 15px rgba(255, 120, 0, 0.3);
+
+  &:hover {
+    background-color: #e67300; /* Darker hover */
+    transform: translateY(-2px);
+  }
+}
+
 @media (max-width: 640px) {
   .btn-primary {
-    @apply px-8 py-3 text-base;
+    @apply px-4 py-3 text-base;
   }
 }
 
-/* ------------------- Slide In ------------------- */
+/* ------------------- Animations ------------------- */
 @keyframes slideIn {
-  0% {
-    transform: translateY(-50px) scale(0.95);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
+  0% { transform: translateY(-50px) scale(0.95); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
 }
-.animate-slideIn {
-  animation: slideIn 0.3s ease-out forwards;
-}
+.animate-slideIn { animation: slideIn 0.3s ease-out forwards; }
 
-/* ------------------- Fade Animations ------------------- */
 @layer utilities {
-  /* Basic fades */
-  .fade-up {
-    @apply opacity-0 translate-y-8;
-    animation: fadeUp 0.8s ease-out forwards;
-  }
-  .fade-down {
-    @apply opacity-0 -translate-y-8;
-    animation: fadeDown 0.8s ease-out forwards;
-  }
-  .fade-left {
-    @apply opacity-0 -translate-x-8;
-    animation: fadeLeft 0.8s ease-out forwards;
-  }
-  .fade-right {
-    @apply opacity-0 translate-x-8;
-    animation: fadeRight 0.8s ease-out forwards;
-  }
+  .fade-up { @apply opacity-0 translate-y-8; animation: fadeUp 0.8s ease-out forwards; }
+  .fade-down { @apply opacity-0 -translate-y-8; animation: fadeDown 0.8s ease-out forwards; }
+  .fade-left { @apply opacity-0 -translate-x-8; animation: fadeLeft 0.8s ease-out forwards; }
+  .fade-right { @apply opacity-0 translate-x-8; animation: fadeRight 0.8s ease-out forwards; }
 
-  /* Fade + Slide combo */
-  .fade-slide-up {
-    @apply opacity-0 translate-y-6;
-    animation: fadeSlideUp 0.8s ease-out forwards;
-  }
-  .fade-slide-down {
-    @apply opacity-0 -translate-y-6;
-    animation: fadeSlideDown 0.8s ease-out forwards;
-  }
-  .fade-slide-left {
-    @apply opacity-0 -translate-x-6;
-    animation: fadeSlideLeft 0.8s ease-out forwards;
-  }
-  .fade-slide-right {
-    @apply opacity-0 translate-x-6;
-    animation: fadeSlideRight 0.8s ease-out forwards;
-  }
+  .fade-slide-up { @apply opacity-0 translate-y-6; animation: fadeSlideUp 0.8s ease-out forwards; }
+  .fade-slide-down { @apply opacity-0 -translate-y-6; animation: fadeSlideDown 0.8s ease-out forwards; }
+  .fade-slide-left { @apply opacity-0 -translate-x-6; animation: fadeSlideLeft 0.8s ease-out forwards; }
+  .fade-slide-right { @apply opacity-0 translate-x-6; animation: fadeSlideRight 0.8s ease-out forwards; }
 
-  /* Optional: Animation Delay Utilities */
+  /* Optional Animation Delays */
   .delay-100 { animation-delay: 0.1s; }
   .delay-200 { animation-delay: 0.2s; }
   .delay-300 { animation-delay: 0.3s; }
@@ -88,37 +71,18 @@
   .delay-1000 { animation-delay: 1s; }
 }
 
-/* Keyframes */
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeDown {
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeLeft {
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes fadeRight {
-  to { opacity: 1; transform: translateX(0); }
-}
+/* ------------------- Keyframes ------------------- */
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeDown { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft { to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeRight { to { opacity: 1; transform: translateX(0); } }
 
-@keyframes fadeSlideUp {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeSlideDown {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeSlideLeft {
-  0% { opacity: 0; transform: translateX(-20px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-@keyframes fadeSlideRight {
-  0% { opacity: 0; transform: translateX(20px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
+@keyframes fadeSlideUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes fadeSlideDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes fadeSlideLeft { 0% { opacity: 0; transform: translateX(-20px); } 100% { opacity: 1; transform: translateX(0); } }
+@keyframes fadeSlideRight { 0% { opacity: 0; transform: translateX(20px); } 100% { opacity: 1; transform: translateX(0); } }
 
+/* ------------------- CSS Variables ------------------- */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -133,8 +97,8 @@
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 24 100% 50%; /* FF7800 */
+    --accent-foreground: 0 0% 0%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
@@ -147,6 +111,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -160,8 +125,8 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 0%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 14.9%;
@@ -172,14 +137,5 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }

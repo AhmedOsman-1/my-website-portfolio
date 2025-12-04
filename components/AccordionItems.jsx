@@ -12,32 +12,30 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const brand = "#FF7800";
+
 const AccordionItems = () => {
   const sectionRef = useRef(null);
   const itemRefs = useRef([]);
 
   useEffect(() => {
-    // Animate the whole section heading
     if (sectionRef.current) {
       gsap.fromTo(
         sectionRef.current.querySelector("h4"),
-        { y: 50, opacity: 0 },
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: 0.7,
           ease: "power3.out",
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top 90%",
-            end: "top 70%",
-            scrub: true,
           },
         }
       );
     }
 
-    
     itemRefs.current.forEach((item, index) => {
       gsap.fromTo(
         item,
@@ -46,14 +44,12 @@ const AccordionItems = () => {
           y: 0,
           opacity: 1,
           scale: 1,
-          duration: 0.6,
+          duration: 0.55,
+          delay: index * 0.08,
           ease: "power3.out",
-          delay: index * 0.1, 
           scrollTrigger: {
             trigger: item,
             start: "top 90%",
-            end: "top 75%",
-            scrub: true,
           },
         }
       );
@@ -62,55 +58,86 @@ const AccordionItems = () => {
 
   return (
     <section ref={sectionRef} className="mt-8">
-      <h4 className="text-2xl md:text-3xl uppercase font-Bebas font-semibold text-center mb-6 text-slate-900">
-        Frequiently Asked Questions:
+      <h4 className="text-2xl md:text-3xl uppercase font-Bebas font-semibold text-center mb-6 text-white">
+        Frequently Asked Questions
       </h4>
-      <Accordion type="single" collapsible className="max-w-3xl mx-auto">
+
+      <Accordion
+        type="single"
+        collapsible
+        className="max-w-3xl mx-auto space-y-3"
+      >
         {[
           {
             title: "What’s your approach to building a project?",
             content:
-              "We'll go through what you're doing right now, what's working and what's not, and we'll make sure to optimize your project for maximum performance. Then I'll show you how we can build a simple system that brings in better leads and help you close them.",
+              "We'll audit what you're doing now, optimize what's working, fix what isn't, and create a clean system that brings predictable results.",
           },
           {
             title: "How did you get into front-end development?",
             content:
-              "Honestly, I started out just curious about how websites worked. One line of code turned into late-night experiments, and before I knew it, I was building full projects.",
+              "Started with curiosity → obsession → consistency. Over time it became a skillset I sharpen every single day.",
           },
           {
             title: "Do you only build websites, or do you also design?",
             content:
-              "I’m primarily a developer, but I have a good eye for design. I love collaborating with designers, but if needed, I can create clean and simple layouts myself.",
+              "Primarily a developer, but I build clean UI layouts and collaborate smoothly with designers.",
           },
-          
           {
             title: "What kind of projects do you usually build?",
             content:
-              "I’ve built landing pages, personal portfolios, SaaS dashboards, eCommerce stores, blog platforms, and social media-style apps. My goal is always to create functional products that users love.",
+              "Landing pages, SaaS dashboards, eCommerce, portfolios, and interactive web apps.",
           },
           {
             title: "Can you customize a website for my business?",
             content:
-              "Absolutely! I design websites that match your brand identity, focus on conversions, and deliver measurable results.",
+              "Absolutely. Tailored, modern, and conversion-focused builds are my specialty.",
           },
           {
             title: "What tools do you use daily?",
             content:
-              "VS Code, GitHub, Chrome DevTools, Figma, and sometimes Notion to keep my workflow organized.",
+              "VS Code, GitHub, Chrome DevTools, Figma, Notion, Prettier.",
           },
           {
             title: "Are you open for freelance work or full-time roles?",
             content:
-              "Yes! I collaborate with startups, SaaS companies, agencies, and coaches. Whether freelance or full-time, I’m always open to impactful opportunities.",
+              "Yes — I work with startups, SaaS, creators, and agencies on impactful projects.",
           },
         ].map((item, index) => (
           <AccordionItem
             key={index}
             value={`item-${index + 1}`}
             ref={(el) => (itemRefs.current[index] = el)}
+            className="rounded-2xl bg-[#0E0E0E] border border-white/5 px-4"
           >
-            <AccordionTrigger>{item.title}</AccordionTrigger>
-            <AccordionContent>{item.content}</AccordionContent>
+            <AccordionTrigger
+              className="
+                text-white 
+                font-medium
+                py-4
+                hover:no-underline
+                hover:bg-white/5 
+                transition
+                rounded-xl
+                aria-expanded:text-[brand]
+              "
+              style={{
+                '--tw-prose-bullets': brand,
+              }}
+            >
+              {item.title}
+            </AccordionTrigger>
+
+            <AccordionContent
+              className="
+                text-gray-300 
+                text-sm 
+                leading-relaxed
+                pb-4
+              "
+            >
+              {item.content}
+            </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>

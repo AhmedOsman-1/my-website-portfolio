@@ -3,7 +3,7 @@ import Button from "./Button";
 
 export default function Header() {
   return (
-    <header className="relative bg-white text-neutral-900 overflow-visible rounded-b-[800px]">
+    <header  className="relative bg-white text-neutral-900 overflow-visible rounded-b-[800px]">
       <div className="container mx-auto px-4 pt-40 pb-36 md:pt-10 md:pb-12 text-center relative z-10">
 
         {/* Headline */}
