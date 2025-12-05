@@ -19,7 +19,7 @@ export default function RecentProjects() {
 
   const getCardsToShow = useCallback(() => {
     if (typeof window !== "undefined") {
-      if (window.innerWidth >= 1024) return 3;
+      if (window.innerWidth >= 1024) return 2;
       if (window.innerWidth >= 768) return 2;
       return 1;
     }
@@ -147,7 +147,7 @@ export default function RecentProjects() {
             key={project.id}
             item={project}
             cardRef={(el) => (cardsRef.current[i] = el)}
-            className="bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] shadow-lg rounded-xl"
+            className=" text-[hsl(var(--card-foreground))] shadow-lg rounded-xl"
           />
         ))}
       </div>

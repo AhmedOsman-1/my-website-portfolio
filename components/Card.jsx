@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
 
-const Card = ({ item, cardRef }) => {
+const Card = ({ item, cardRef, className = "" }) => {
   const cardContainer = useRef(null);
 
   useEffect(() => {
@@ -47,12 +47,16 @@ const Card = ({ item, cardRef }) => {
   const href = isService ? "/contact" : item.link || "#";
 
   return (
-    <Link href={href} ref={cardRef} target="_self" className="w-[90%] md:w-[45%] lg:w-[30%] block">
+    <Link
+      href={href}
+      ref={cardRef}
+      target="_self"
+      className="flex-shrink-0 w-[90%] sm:w-[300px] lg:w-[400px] block" // Mobile dynamic, Desktop fixed width
+    >
       <div
         ref={cardContainer}
-        className="
+        className={`
           relative 
-          bg-[hsl(var(--card)/1)] 
           text-[hsl(var(--card-foreground))] 
           border border-[hsl(var(--accent))] 
           rounded-2xl 
@@ -63,7 +67,8 @@ const Card = ({ item, cardRef }) => {
           flex flex-col 
           transition-all duration-300
           hover:shadow-[0_0_30px_rgba(255,120,0,0.5),0_20px_50px_rgba(255,120,0,0.2)]
-        "
+          ${className}
+        `}
       >
         {/* Image */}
         <div className="relative w-full h-[65%] p-4 flex items-center justify-center">

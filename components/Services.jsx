@@ -17,15 +17,17 @@ export default function Services() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(1);
 
+  // Calculate how many cards to show based on screen width
   const getCardsToShow = useCallback(() => {
     if (typeof window !== "undefined") {
-      if (window.innerWidth >= 1024) return 3;
+      if (window.innerWidth >= 1024) return 2;
       if (window.innerWidth >= 768) return 2;
       return 1;
     }
     return 1;
   }, []);
 
+  // Update cardsToShow on mount and resize
   useEffect(() => {
     const resize = () => setCardsToShow(getCardsToShow());
     resize();
@@ -43,6 +45,7 @@ export default function Services() {
 
     gsap.set(containerRef.current, { x: 0 });
 
+    // Draggable with snap
     Draggable.create(containerRef.current, {
       type: "x",
       inertia: true,
@@ -64,7 +67,7 @@ export default function Services() {
       },
     });
 
-    // Animate cards only once
+    // Animate cards on scroll
     gsap.fromTo(
       cardsRef.current,
       { y: 60, opacity: 0, scale: 0.95 },
@@ -83,7 +86,7 @@ export default function Services() {
       }
     );
 
-    // Heading animation only once
+    // Animate heading
     if (headingRef.current) {
       gsap.fromTo(
         headingRef.current,
@@ -120,24 +123,32 @@ export default function Services() {
   };
 
   return (
-    <section id="services" className="py-24 relative overflow-hidden bg-cover border-[#13adff] border-t mt-24 bg-center bg-no-repeat rounded-t-[40px] rounded-b-[40px]">
+    <section
+      id="services"
+      className="py-24 relative overflow-hidden bg-cover border-t border-[#13adff] mt-24 bg-center bg-no-repeat rounded-t-[40px] rounded-b-[40px]"
+    >
       {/* Heading */}
       <div ref={headingRef} className="text-center mb-12">
         <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold font-Bebas uppercase tracking-wide">
           Let me <span className="text-[#13adff]">bring your ideas</span> to life
         </h1>
         <p className="text-white/70 md:text-lg lg:text-xl max-w-2xl mx-auto mt-4">
-          I&#39;ll show you how we can build a simple system that brings in better leads and help you close them.
+          I&apos;ll show you how we can build a simple system that brings in better leads and help you close them.
         </p>
         <p className="uppercase font-bold text-[#13adff] mt-6">
-          Here&#39;s my services to help you shine
+          Here&apos;s my services to help you shine
         </p>
       </div>
 
       {/* Cards */}
       <div ref={containerRef} className="flex gap-8 cursor-grab select-none px-6 will-change-transform">
         {servicesData.map((service, i) => (
-          <Card key={service.id} item={service} type="service" cardRef={(el) => (cardsRef.current[i] = el)} />
+          <Card
+            key={service.id}
+            item={service}
+            cardRef={(el) => (cardsRef.current[i] = el)}
+            className="text-[hsl(var(--card-foreground))] shadow-lg rounded-xl flex-shrink-0"
+          />
         ))}
       </div>
 

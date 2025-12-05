@@ -8,19 +8,31 @@ import Services from "@/components/Services";
 
 export default function Home() {
   return (
-    <main className="bg-[#0B0F1A] backdrop-blur-lg bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url()" }}>
-   
-      <Navbar />
+   <main className="bg-[#0B0F1A] backdrop-blur-lg bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url()" }}>
+  <Navbar />
 
-      
-      <section className="bg-white rounded-b-[80px] shadow-xl">
-        <Header />
-      </section>
-      <RecentProjects />
-      <Services />
-      <About />
-      <Contact /> 
-      <Footer />
-    </main>
+  <section id="header" className="bg-white rounded-b-[80px] shadow-xl">
+    <Header />
+  </section>
+
+  <section id="projects">
+    <RecentProjects />
+  </section>
+
+  <section id="services">
+    <Services />
+  </section>
+
+  <section id="about">
+    <About />
+  </section>
+
+  <section id="contact">
+    <Contact />
+  </section>
+
+  <Footer />
+</main>
+
   );
 }

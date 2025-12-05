@@ -30,7 +30,7 @@ html {
 
   &:hover {
     background-color: #e67300; /* Darker hover */
-    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 115, 0, 0.4);
   }
 }
 
