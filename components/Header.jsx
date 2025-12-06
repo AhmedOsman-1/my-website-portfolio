@@ -23,7 +23,7 @@ export default function Header() {
 
         {/* Image + Button */}
         <div className="relative mx-auto md:mt-[-4rem] w-[22rem] h-44 sm:w-64 sm:h-64 md:w-[36rem] md:h-[18rem] z-20">
-          {/* My Photo (Static) */}
+          {/* My Photo (Static) fixed*/}
           <Image
             src="/Me.png"
             alt="King of Front End"
