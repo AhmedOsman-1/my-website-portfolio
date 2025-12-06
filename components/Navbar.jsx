@@ -112,7 +112,7 @@ const Navbar = () => {
             {/* Mobile Nav */}
             <ul className="flex flex-col items-center w-full mt-2">
               {navItems.map((item) => (
-                <li key={item} className="w-full border-b border-gray-200 text-center py-3">
+                <li key={item} className="w-full border-b border-gray-200 text-center text-black py-3">
                   <button
                     onClick={() => handleScrollTo(item.toLowerCase())}
                     className="font-Poppins text-lg hover:text-[#00a6ff] transition"
@@ -121,7 +121,7 @@ const Navbar = () => {
                   </button>
                 </li>
               ))}
-              <li className="w-full border-b border-gray-200 text-center py-3">
+              <li className="w-full border-b border-gray-200 text-center text-black py-3">
                 <Link
                   href="/contact"
                   onClick={() => setMenuOpen(false)}
