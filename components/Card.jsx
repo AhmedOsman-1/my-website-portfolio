@@ -17,7 +17,7 @@ const Card = ({ item, cardRef, className = "" }) => {
       gsap.to(el, {
         scale: 1.05,
         y: -10,
-        boxShadow: "0 0 30px rgba(255,120,0,0.5), 0 20px 50px rgba(255,120,0,0.2)",
+        boxShadow: "0 0 30px rgba(19,173,255,0.5), 0 20px 50px rgba(19,173,255,0.2)",
         duration: 0.5,
         ease: "power3.out",
       });
@@ -27,7 +27,7 @@ const Card = ({ item, cardRef, className = "" }) => {
       gsap.to(el, {
         scale: 1,
         y: 0,
-        boxShadow: "0 0 10px rgba(255,120,0,0.1), 0 15px 35px rgba(0,0,0,0.15)",
+        boxShadow: "0 0 10px rgba(19,173,255,0.1), 0 15px 35px rgba(19,173,255,0.15)",
         duration: 0.5,
         ease: "power3.out",
       });
@@ -51,7 +51,7 @@ const Card = ({ item, cardRef, className = "" }) => {
       href={href}
       ref={cardRef}
       target="_self"
-      className="flex-shrink-0 w-[90%] sm:w-[300px] lg:w-[400px] block" // Mobile dynamic, Desktop fixed width
+      className="flex-shrink-0 w-[90%] sm:w-[300px] lg:w-[400px] block"
     >
       <div
         ref={cardContainer}
@@ -66,7 +66,7 @@ const Card = ({ item, cardRef, className = "" }) => {
           h-[42vh] min-h-[420px] 
           flex flex-col 
           transition-all duration-300
-          hover:shadow-[0_0_30px_rgba(255,120,0,0.5),0_20px_50px_rgba(255,120,0,0.2)]
+          hover:shadow-[0_0_30px_rgba(19,173,255,0.5),0_20px_50px_rgba(19,173,255,0.2)]
           ${className}
         `}
       >

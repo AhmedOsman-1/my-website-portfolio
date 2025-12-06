@@ -41,13 +41,13 @@ const Navbar = () => {
   return (
     <>
       {/* Background Logo */}
-      <div className="fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%] pointer-events-none">
+      <div id="home" className="fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%] pointer-events-none">
         <Image src="/bg-logo.jpeg" height={500} width={1000} alt="background logo" />
       </div>
 
       {/* Navbar */}
       <nav
-        className={`w-full mt-2 fixed top-0 left-0 px-5 lg:px-8 xl:px-[8%] flex items-center justify-between z-50 transition-all duration-300
+        className={`w-full mt-2 fixed top-0 left-0 px-5 lg:px-8 xl:px-[8%] flex items-center text-gray-700 justify-between z-50 transition-all duration-300
         ${isScrolled ? "bg-white/60 backdrop-blur-md shadow-sm" : "bg-transparent"}`}
       >
         {/* Logo */}

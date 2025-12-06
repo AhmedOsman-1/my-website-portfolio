@@ -129,7 +129,7 @@ export default function Services() {
     >
       {/* Heading */}
       <div ref={headingRef} className="text-center mb-12">
-        <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold font-Bebas uppercase tracking-wide">
+        <h1 className="text-[#F8FAFC] text-3xl md:text-4xl lg:text-5xl font-extrabold font-Bebas uppercase tracking-wide">
           Let me <span className="text-[#13adff]">bring your ideas</span> to life
         </h1>
         <p className="text-white/70 md:text-lg lg:text-xl max-w-2xl mx-auto mt-4">

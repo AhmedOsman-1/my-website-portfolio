@@ -152,8 +152,13 @@ export default function Contact() {
   }, []);
 
   return (
-    <section id="contact" className="py-24 px-4 md:px-8 bg-transparent" aria-labelledby="contact-heading">
-      <div  className="max-w-5xl mx-auto  bg-white rounded-[32px] shadow-[0_18px_60px_rgba(15,23,42,0.12)] px-10 py-12 md:px-14 md:py-14 grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+    <section id="contact" className="py-24 px-4 md:px-8 bg-transparent mb-12" aria-labelledby="contact-heading">
+      <h1 className="text-center mb-6 text-3xl md:text-4xl font-bold leading-tight text-">
+  Let’s <span className="text-[#13ADFF]">bring <span className="text-white">your</span> ideas <span className="text-white">to</span> life.</span>
+</h1>
+
+      <div  className="max-w-5xl mx-auto  bg-white rounded-[32px] shadow-[0_18px_60px_rgba(15,23,42,0.12)] px-10 py-12 md:px-14 md:py-14 grid grid-cols-1 md:grid-cols-2 gap-10 items-start border-[hsl(var(--accent))] border-t-4 border-b-4">
+      
         {/* Left info */}
         <div ref={leftCardRef} className="space-y-6">
           <p className="text-xs tracking-[0.25em] uppercase text-sky-500">We&apos;re here to help you</p>
